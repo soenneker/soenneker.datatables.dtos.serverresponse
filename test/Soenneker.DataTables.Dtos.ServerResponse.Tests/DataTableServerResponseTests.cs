@@ -1,11 +1,10 @@
-﻿using Soenneker.Tests.Unit;
-using Xunit;
+using Soenneker.Tests.Unit;
 
 namespace Soenneker.DataTables.Dtos.ServerResponse.Tests;
 
 public sealed class DataTableServerResponseTests : UnitTest
 {
-    [Fact]
+    [Test]
     public void Default()
     {
 
