@@ -16,13 +16,13 @@ public sealed class DataTableServerResponse
     /// <summary>
     /// Gets or sets the total number of records before filtering.
     /// </summary>
-    [JsonPropertyName("totalRecords")]
+    [JsonPropertyName("recordsTotal")]
     public int TotalRecords { get; set; }
 
     /// <summary>
     /// Gets or sets the total number of records after filtering.
     /// </summary>
-    [JsonPropertyName("totalFilteredRecords")]
+    [JsonPropertyName("recordsFiltered")]
     public int TotalFilteredRecords { get; set; }
 
     /// <summary>

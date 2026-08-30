@@ -5,27 +5,51 @@
 
 # Soenneker.DataTables.Dtos.ServerResponse
 
-Represents a server response for DataTables server-side processing.
+`DataTableServerResponse` produces the JSON envelope expected by DataTables when `serverSide` processing is enabled.
 
-## Install
+## Installation
 
 ```bash
 dotnet add package Soenneker.DataTables.Dtos.ServerResponse
 ```
 
-## What you get
+## Successful response
 
-- `DataTableServerResponse` — Represents a server response for DataTables server-side processing.
+```csharp
+using Microsoft.AspNetCore.Mvc;
+using Soenneker.DataTables.Dtos.ServerResponse;
 
-## API at a glance
+public IActionResult GetCustomers(int draw)
+{
+    CustomerRow[] page = GetCurrentPage();
 
-| API | What it does | Result / important behavior |
-| --- | --- | --- |
-| `DataTableServerResponse.Draw` | Gets or sets the draw counter that DataTables is expecting back from the server. | Gets or sets the draw counter that DataTables is expecting back from the server. |
-| `DataTableServerResponse.TotalRecords` | Gets or sets the total number of records before filtering. | Gets or sets the total number of records before filtering. |
-| `DataTableServerResponse.TotalFilteredRecords` | Gets or sets the total number of records after filtering. | Gets or sets the total number of records after filtering. |
-| `DataTableServerResponse.Data` | Gets or sets the data to be displayed in the table. | Gets or sets the data to be displayed in the table. |
-| `DataTableServerResponse.Error` | Gets or sets an optional error message to be displayed by DataTables. | Gets or sets an optional error message to be displayed by DataTables. |
-| `DataTableServerResponse.ContinuationToken` | If applicable, a storage continuation token that the client must send back on the next request. Typically `null` when the current page is the last page. Optional. | If applicable, a storage continuation token that the client must send back on the next request. Typically `null` when the current page is the last page. Optional. |
-| `DataTableServerResponse.Success(draw, recordsTotal, recordsFiltered, data, continuationToken)` | Creates a success response for DataTables server-side processing. | A configured DataTablesServerResponse. |
-| `DataTableServerResponse.Fail(draw, errorMessage)` | Creates an error response for DataTables server-side processing. | A configured DataTablesServerResponse with the error message. |
+    return Ok(DataTableServerResponse.Success(
+        draw: draw,
+        recordsTotal: 12_430,
+        recordsFiltered: 87,
+        data: page));
+}
+```
+
+The serialized response uses DataTables' required property names:
+
+```json
+{
+  "draw": 3,
+  "recordsTotal": 12430,
+  "recordsFiltered": 87,
+  "data": []
+}
+```
+
+`recordsTotal` is the count before search filters. `recordsFiltered` is the count after filtering but before paging. `data` contains only the requested page.
+
+Always echo the parsed integer `draw` from the request; do not copy an untrusted raw string into a response.
+
+## Failed response
+
+```csharp
+return Ok(DataTableServerResponse.Fail(request.Draw, "Unable to load customers."));
+```
+
+Keep `Error` suitable for display and log internal exception details separately. The optional `ContinuationToken` is a package extension for storage systems that page by cursor; DataTables itself does not manage that token automatically.
