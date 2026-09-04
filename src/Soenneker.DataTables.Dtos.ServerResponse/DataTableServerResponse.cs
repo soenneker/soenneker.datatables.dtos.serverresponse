@@ -53,7 +53,8 @@ public sealed class DataTableServerResponse
     /// <param name="data">The data to be displayed.</param>
     /// <param name="continuationToken"></param>
     /// <returns>A configured DataTablesServerResponse.</returns>
-    public static DataTableServerResponse Success(int draw, int recordsTotal, int recordsFiltered, object data, string? continuationToken = null)
+    public static DataTableServerResponse Success(int draw, int recordsTotal, int recordsFiltered, object data,
+        string? continuationToken = null)
     {
         return new DataTableServerResponse
         {
